@@ -86,8 +86,9 @@ def get_schedule_usage_records(
     response.raise_for_status()
     records = response.json()
     records = sorted(records, key=lambda r: r["time_start"])
-    records = scale_usage_records(records, scale=WATT_HOUR_TO_KILOWATT_HOUR)
-    return records
+    usage_records = [ScheduleUsageRecord.parse_obj(r) for r in records]
+    usage_records = scale_usage_records(usage_records, scale=WATT_HOUR_TO_KILOWATT_HOUR)
+    return usage_records
 
 
 def get_schedule_measurement_records(
@@ -103,5 +104,8 @@ def get_schedule_measurement_records(
     response.raise_for_status()
     records = response.json()
     records = sorted(records, key=lambda r: r["time_local_utc"])
-    records = scale_measurement_records(records, scale=WATT_HOUR_TO_KILOWATT_HOUR)
-    return records
+    measurement_records = [ScheduleMeasurementRecord.parse_obj(r) for r in records]
+    measurement_records = scale_measurement_records(
+        measurement_records, scale=WATT_HOUR_TO_KILOWATT_HOUR
+    )
+    return measurement_records
