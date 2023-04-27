@@ -18,7 +18,7 @@ NAME = "enerbitdso"
 AUTHOR = "enerBit"
 AUTHOR_EMAIL = "operacion-fronteras@enerbit.co"
 DESCRIPTION = "enerBit DSO (Distribution System Operator) API client"
-PROJECT_URL = ""
+PROJECT_URL = "https://github.com/enerBit/enerbitdso"
 
 here = path.abspath(path.dirname(__file__))
 
@@ -202,6 +202,6 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what"s used to render the link text on PyPI.
     project_urls={  # Optional
-        "Source": "",
+        "Source": "https://github.com/enerBit/enerbitdso",
     },
 )
