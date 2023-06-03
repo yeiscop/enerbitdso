@@ -62,7 +62,6 @@ def fetch(
     frts: list[str] = typer.Argument(None, help="List of frt codes separated by ' '"),
 ):
     ebclient = enerbit.get_client(api_base_url, api_username, api_password)
-    TZ_INFO = zoneinfo.ZoneInfo(timezone)
     today = dt.datetime.now(TZ_INFO).replace(**DATE_PARTS_TO_START_DAY)
     if since is None:
         since = today - dt.timedelta(days=1)

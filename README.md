@@ -20,20 +20,20 @@ Se distribuye como un paquete de Python ejecutable.
 
 1. Crear un ambiente virtual de Python para aislar la instalación del paquete de otros paquetes.
 
-```sh
+```powershell
 python3 -m venv venv
-source ./venv/bin/activate
+source ./venv/Scripts/activate
 ```
 
 1. Instalar paquete usando pip (asegurarse de tener activo el ambiente virtual).
 
-```sh
-python -m pip install .
+```powershell
+python -m pip install enerbitdso
 ```
 
 1. Comprobar la instalación con el comando de ayuda
 
-```sh
+```powershell
 enerbitdso --help
 ```
 
@@ -60,19 +60,19 @@ Para ejecutar este sub-comando se requieren tres variables de entorno configurad
 - ENERBIT_API_USERNAME: El nombre de usuario para autenticarse contra el API, ejemplo: `pedro.perez@example.com`
 - ENERBIT_API_PASSWORD: La contraseña del usuario para autenticarse, ejemplo: `mIClaVeSUperseCRETa`
 
-Para configurar estas variables de entorno se pueden ejecutar los siguientes comandos en la terminal:
+Para configurar estas variables de entorno se pueden ejecutar los siguientes comandos en la terminal de powershell:
 
 ```powershell
 $env:ENERBIT_API_BASE_URL = 'https://dso.enerbit.me/'
-$env:ENERBIT_API_BASE_URL = 'NOMBRE DE USUARIO'
-$env:ENERBIT_API_BASE_URL = 'CONTRASEÑA DE USUARIO'
+$env:ENERBIT_API_BASE_URL = 'pedro.perez@example.com'
+$env:ENERBIT_API_BASE_URL = 'mIClaVeSUperseCRETa'
 ```
 
 #### Especificación de fronteras a consultar
 
 Las fronteras a consultar se pueden especificar como una lista al final del comando separadas por espacios:
 
-```
+```powershell
 > enerbitdso usages fetch Frt00000 Frt00001
 ```
 
@@ -89,8 +89,8 @@ El intervalo de tiempo se define a través de los parámetros de tipo fecha `--s
 
 Para consultar los periodos entre 2023-04-01 a las 09:00 y el 2023-04-05 a las 17:00:
 
-```
-> enerbitdso usages fetch Frt00000 Frt00001
+```powershell
+> enerbitdso usages fetch Frt00000 Frt00001 --since 20230401 --until 20230405
 ```
 
 #### Opción de ayuda

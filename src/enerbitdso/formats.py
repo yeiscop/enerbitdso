@@ -2,18 +2,17 @@ import csv
 import io
 
 import orjson
+import pydantic
 
-import enerbitdso.enerbit as enerbit
 
-
-def as_json(records: list[enerbit.ScheduleUsageRecord]) -> io.StringIO:
+def as_json(records: list[pydantic.BaseModel]) -> io.StringIO:
     content = orjson.dumps([r.dict() for r in records])
     res = io.BytesIO(content)
     wrapper = io.TextIOWrapper(res, encoding="utf-8")
     return wrapper
 
 
-def as_csv(records: list[enerbit.ScheduleUsageRecord], header: bool) -> io.StringIO:
+def as_csv(records: list[pydantic.BaseModel], header: bool) -> io.StringIO:
     res = io.StringIO(newline="")
     fields = records[0].__fields__.keys()
     content_lines = [r.dict() for r in records]
@@ -25,7 +24,7 @@ def as_csv(records: list[enerbit.ScheduleUsageRecord], header: bool) -> io.Strin
     return res
 
 
-def as_jsonl(records: list[enerbit.ScheduleUsageRecord]) -> io.StringIO:
+def as_jsonl(records: list[pydantic.BaseModel]) -> io.StringIO:
     content_lines = [orjson.dumps(r.dict()) for r in records]
     res = io.BytesIO()
     for i in content_lines:
