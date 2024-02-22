@@ -1,12 +1,14 @@
 import datetime as dt
 import enum
 import logging
+import math
 import operator
 import pathlib
 import sys
-import zoneinfo
 
+import httpx
 import typer
+import zoneinfo
 from rich.console import Console
 
 from enerbitdso import enerbit, formats
@@ -19,6 +21,7 @@ logger = logging.getLogger(__name__)
 DATE_FORMATS = ["%Y-%m-%d", "%Y%m%d"]
 DATE_PARTS_TO_START_DAY = {"hour": 0, "minute": 0, "second": 0, "microsecond": 0}
 TZ_INFO = zoneinfo.ZoneInfo("America/Bogota")
+MAX_REQUEST_RANGE = dt.timedelta(days=7)
 
 cli = typer.Typer(pretty_exceptions_show_locals=False)
 usages = typer.Typer()
@@ -36,6 +39,22 @@ def yesterday():
 
 def today():
     return None
+
+
+def fetch_schedule_usage_records_large_interval(
+    client: httpx.Client, frt_code: str, since: dt.datetime, until: dt.datetime
+) -> list[enerbit.ScheduleUsageRecord]:
+    number_of_requests = math.floor((until - since) / MAX_REQUEST_RANGE)
+    logger.debug(f"Fetching usages in {number_of_requests} requests")
+    usage_records = []
+    for i in range(0, number_of_requests):
+        fi = since + i * MAX_REQUEST_RANGE
+        ff = fi + MAX_REQUEST_RANGE
+        this_usage_records = enerbit.get_schedule_usage_records(
+            client, frt_code, since=fi, until=ff
+        )
+        usage_records.extend(this_usage_records)
+    return usage_records
 
 
 @usages.command()
@@ -61,12 +80,22 @@ def fetch(
     ),
     frts: list[str] = typer.Argument(None, help="List of frt codes separated by ' '"),
 ):
-    ebclient = enerbit.get_client(api_base_url, api_username, api_password)
+    try:
+        ebclient = enerbit.get_client(api_base_url, api_username, api_password)
+    except Exception:
+        err_console.print(
+            f"Failed to authenticate to '{api_base_url}' as '{api_username}'"
+        )
+        raise typer.Exit(code=1)
     today = dt.datetime.now(TZ_INFO).replace(**DATE_PARTS_TO_START_DAY)
     if since is None:
         since = today - dt.timedelta(days=1)
+    else:
+        since = since.astimezone(TZ_INFO)
     if until is None:
         until = today
+    else:
+        until = until.astimezone(TZ_INFO)
 
     if not operator.xor(frt_file is not None, len(frts) > 0):
         err_console.print("Can't use '--FRT_FILE' and 'FRTS' on the same call")
@@ -82,7 +111,7 @@ def fetch(
 
     for i, f in enumerate(frts):
         try:
-            usage_records = enerbit.get_schedule_usage_records(
+            usage_records = fetch_schedule_usage_records_large_interval(
                 ebclient, f, since=since, until=until
             )
         except Exception:
