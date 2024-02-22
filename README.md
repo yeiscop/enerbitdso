@@ -63,9 +63,9 @@ Para ejecutar este sub-comando se requieren tres variables de entorno configurad
 Para configurar estas variables de entorno se pueden ejecutar los siguientes comandos en la terminal de powershell:
 
 ```powershell
-$env:ENERBIT_API_BASE_URL = 'https://dso.enerbit.me/'
-$env:ENERBIT_API_BASE_URL = 'pedro.perez@example.com'
-$env:ENERBIT_API_BASE_URL = 'mIClaVeSUperseCRETa'
+$env:ENERBIT_API_BASE_URL='https://dso.enerbit.me/'
+$env:ENERBIT_API_USERNAME='pedro.perez@example.com'
+$env:ENERBIT_API_PASSWORD='mIClaVeSUperseCRETa'
 ```
 
 #### Especificación de fronteras a consultar
