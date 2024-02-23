@@ -1,5 +1,6 @@
 import datetime as dt
 import logging
+import math
 
 import httpx
 import pydantic
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 TIMEOUT = httpx.Timeout(5, read=60)
 
 WATT_HOUR_TO_KILOWATT_HOUR = 0.001
+MAX_REQUEST_RANGE = dt.timedelta(days=7)
 
 
 class ScheduleUsageRecord(pydantic.BaseModel):
@@ -109,3 +111,19 @@ def get_schedule_measurement_records(
         measurement_records, scale=WATT_HOUR_TO_KILOWATT_HOUR
     )
     return measurement_records
+
+
+def fetch_schedule_usage_records_large_interval(
+    client: httpx.Client, frt_code: str, since: dt.datetime, until: dt.datetime
+) -> list[ScheduleUsageRecord]:
+    number_of_requests = math.floor((until - since) / MAX_REQUEST_RANGE)
+    logger.debug(f"Fetching usages in {number_of_requests} requests")
+    usage_records = []
+    for i in range(0, number_of_requests):
+        fi = since + i * MAX_REQUEST_RANGE
+        ff = fi + MAX_REQUEST_RANGE
+        this_usage_records = get_schedule_usage_records(
+            client, frt_code, since=fi, until=ff
+        )
+        usage_records.extend(this_usage_records)
+    return usage_records
