@@ -41,7 +41,7 @@ class ScheduleMeasurementRecord(pydantic.BaseModel):
 def get_auth_token(base_url, username, password):
     path = "/auth/token/"
     data = {"username": username, "password": password}
-    with httpx.Client(base_url=base_url) as client:
+    with httpx.Client(base_url=base_url, timeout=TIMEOUT) as client:
         response = client.post(path, data=data)
         response.raise_for_status()
     token = response.json()["access_token"]
