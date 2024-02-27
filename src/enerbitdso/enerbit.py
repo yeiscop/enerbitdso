@@ -116,12 +116,12 @@ def get_schedule_measurement_records(
 def fetch_schedule_usage_records_large_interval(
     client: httpx.Client, frt_code: str, since: dt.datetime, until: dt.datetime
 ) -> list[ScheduleUsageRecord]:
-    number_of_requests = math.floor((until - since) / MAX_REQUEST_RANGE)
+    number_of_requests = math.ceil((until - since) / MAX_REQUEST_RANGE)
     logger.debug(f"Fetching usages in {number_of_requests} requests")
     usage_records = []
     for i in range(0, number_of_requests):
         fi = since + i * MAX_REQUEST_RANGE
-        ff = fi + MAX_REQUEST_RANGE
+        ff = min(fi + MAX_REQUEST_RANGE, until)
         this_usage_records = get_schedule_usage_records(
             client, frt_code, since=fi, until=ff
         )
