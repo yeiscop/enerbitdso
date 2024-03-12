@@ -20,22 +20,22 @@ Se distribuye como un paquete de Python ejecutable.
 
 1. Crear un ambiente virtual de Python para aislar la instalación del paquete de otros paquetes.
 
-```powershell
-python3 -m venv venv
-source ./venv/Scripts/activate
-```
+    ```powershell
+    python3 -m venv venv
+    source ./venv/Scripts/activate
+    ```
 
-1. Instalar paquete usando pip (asegurarse de tener activo el ambiente virtual).
+2. Instalar paquete usando pip (asegurarse de tener activo el ambiente virtual).
 
-```powershell
-python -m pip install enerbitdso
-```
+    ```powershell
+    python -m pip install enerbitdso
+    ```
 
-1. Comprobar la instalación con el comando de ayuda
+3. Comprobar la instalación con el comando de ayuda
 
-```powershell
-enerbitdso --help
-```
+    ```powershell
+    enerbitdso --help
+    ```
 
 # Uso
 
@@ -60,7 +60,7 @@ Para ejecutar este sub-comando se requieren tres variables de entorno configurad
 - ENERBIT_API_USERNAME: El nombre de usuario para autenticarse contra el API, ejemplo: `pedro.perez@example.com`
 - ENERBIT_API_PASSWORD: La contraseña del usuario para autenticarse, ejemplo: `mIClaVeSUperseCRETa`
 
-Para configurar estas variables de entorno se pueden ejecutar los siguientes comandos en la terminal de powershell:
+Para configurar estas variables de entorno se pueden ejecutar los siguientes comandos en la terminal de PowerShell:
 
 ```powershell
 $env:ENERBIT_API_BASE_URL='https://dso.enerbit.me/'
@@ -82,6 +82,13 @@ También se puede usar un archivo de texto con un código de frontera por línea
 > enerbitdso usages fetch --frt-file "D://Mi CGM/misfronteras.txt"
 ```
 
+Donde el archivo `D://Mi CGM/misfronteras.txt` tiene un contenido así:
+
+```txt
+Frt00000
+Frt00001
+```
+
 #### Especificación de intervalo de tiempo para la consulta
 
 El intervalo de tiempo se define a través de los parámetros de tipo fecha `--since` y `--until` (desde y hasta, respectivamente).
@@ -91,6 +98,23 @@ Para consultar los periodos entre 2023-04-01 a las 09:00 y el 2023-04-05 a las 1
 
 ```powershell
 > enerbitdso usages fetch Frt00000 Frt00001 --since 20230401 --until 20230405
+```
+
+#### Salida tipo CSV
+
+Para que el formato de salida sea CSV (valores separados por coma) se puede usar el parámetro `--out-format` con el valor `csv` (*por defecto* se usa `jsonl` que es una línea de JSON por cada registro).
+
+```powershell
+> enerbitdso usages fetch Frt00000 Frt00001 --since 20230401 --until 20230405 --out-format csv
+```
+
+#### Salida a archivo local
+
+Tanto en sistemas Linux, macOS y Windows se puede usar el operador de **redirección** `>` para enviar a un archivo la salida de un comando.
+En este caso el comando seria así:
+
+```powershell
+> enerbitdso usages fetch --frt-file "D://Mi CGM/misfronteras.txt" --since 20230401 --until 20230405 --out-format csv > "D://Mi CGM/mi_archivo_de_salida.csv" 
 ```
 
 #### Opción de ayuda
