@@ -63,7 +63,7 @@ def fetch(
     timeout: int = typer.Option(
         5,
         min=0,
-        max=20,
+        max=200,
     ),
     frts: list[str] = typer.Argument(None, help="List of frt codes separated by ' '"),
 ):
